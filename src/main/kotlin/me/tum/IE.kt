@@ -81,36 +81,40 @@ class IE {
     }
 
     private fun createParameters() {
-        val createParameter =
-            driver.findElement((By.xpath("//legend[text()= 'Configurator']/../div/button")))
+        val createParameter = driver.findElement((By.xpath("//legend[text()= 'Configurator']/../div/button")))
         createParameter.click()
-        val valueParameter =
-            driver.findElement(By.xpath("//div[@class= 'tdinput']/input[@title='Parameter Code']"))
+        val valueParameter = driver.findElement(By.xpath("//div[@class= 'tdinput']/input[@title='Parameter Code']"))
         valueParameter.sendKeys(nameParameter)
-        val descriptionParameter = driver.findElement(By.xpath("//div[@class= 'tdinput']/textarea[@title='Parameter Description']"))
+        val descriptionParameter =
+            driver.findElement(By.xpath("//div[@class= 'tdinput']/textarea[@title='Parameter Description']"))
         descriptionParameter.sendKeys(nameParameter)
         val addValueFirst = driver.findElement(By.xpath("//div/button[text()= 'Add value']"))
         addValueFirst.click()
         val nameValueFirst = driver.findElement(By.xpath("//div[@class= 'tdinput']/input[@title= 'Value Code']"))
         nameValueFirst.sendKeys("1")
+        val descriptionValueFirst =
+            driver.findElement(By.xpath("//div[@class= 'tdinput']/textarea[@title= 'Value Description']"))
+        descriptionValueFirst.sendKeys("test description 1")
         val saveValueFirst = driver.findElement(By.xpath("//div[@class='right-text']/button[text()= 'Save']"))
         saveValueFirst.click()
-        val trueValues = driver.findElements(By.xpath("//td[contains(@data-bind, 'isForParametricAssemblyType')]/span[@class= 'command']"))
+        val trueValues =
+            driver.findElements(By.xpath("//td[contains(@data-bind, 'isForParametricAssemblyType')]/span[@class= 'command']"))
         if (trueValues.isNotEmpty()) {
             while (countValue != 1) {
                 countValue -= 1
                 val addValue = driver.findElement(By.xpath("//div/button[text()= 'Add value']"))
                 addValue.click()
-                val nameValue =
-                    driver.findElement(By.xpath("//div[@class= 'tdinput']/input[@title= 'Value Code']"))
-                val allNameValues = driver.findElements(By.xpath("//td[contains(@data-bind, 'isForParametricAssemblyType')]/span[@class= 'command']"))
+                val nameValue = driver.findElement(By.xpath("//div[@class= 'tdinput']/input[@title= 'Value Code']"))
+                val descriptionValue =
+                    driver.findElement(By.xpath("//div[@class= 'tdinput']/textarea[@title= 'Value Description']"))
+                val allNameValues =
+                    driver.findElements(By.xpath("//td[contains(@data-bind, 'isForParametricAssemblyType')]/span[@class= 'command']"))
                 nameValue.sendKeys("${allNameValues.last().text.toInt().plus(1)}")
-                val saveValue =
-                    driver.findElement(By.xpath("//div[@class='right-text']/button[text()= 'Save']"))
+                descriptionValue.sendKeys("test description ${allNameValues.last().text.toInt().plus(1)}")
+                val saveValue = driver.findElement(By.xpath("//div[@class='right-text']/button[text()= 'Save']"))
                 saveValue.click()
             }
-            val saveParameter =
-                driver.findElement(By.xpath("//span[@class= 'imageButton save']"))
+            val saveParameter = driver.findElement(By.xpath("//span[@class= 'imageButton save']"))
             saveParameter.click()
         }
     }
@@ -310,7 +314,8 @@ class IE {
     fun createRevision(nameType: String = "") {
         if (nameType != "") {
             selectType(nameType)
-            val selectLastVersion = driver.findElements(By.xpath("//a[contains(@data-bind, 'attr: {title: viewValue')]"))
+            val selectLastVersion =
+                driver.findElements(By.xpath("//a[contains(@data-bind, 'attr: {title: viewValue')]"))
             selectLastVersion.last().click()
         }
         Thread.sleep(3000)
@@ -325,6 +330,5 @@ class IE {
         val nameRevision = allNameRevision.last().text
         WorkDoc().workExcel(nameRevision)
         workCreationRevision()
-
     }
 }

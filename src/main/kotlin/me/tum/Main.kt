@@ -8,11 +8,8 @@ var countValue = 3
 
 
 fun main() {
-   IE().createNewType()
+//    IE().createNewType()
 //    IE().createNewTypeWeb()
 //    Chrome().createNewType()
-//    IE().createVersion("14")
-//   WorkDoc().workExcel()
- //   IE().createRevision("1")
 }
 
