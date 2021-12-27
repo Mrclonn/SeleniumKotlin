@@ -8,7 +8,7 @@ import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.support.ui.Select
 import java.time.Duration
 
-class IE {
+class IeClassifier {
     init {
         System.setProperty("webdriver.ie.driver", "src/main/kotlin/drivers/IEDriverServer.exe")
     }
