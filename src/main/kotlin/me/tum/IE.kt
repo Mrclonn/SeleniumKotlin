@@ -117,7 +117,7 @@ class IE {
 
     fun createNewTypeWeb() {
         driver.get(urlWebClassifier)
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60))
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30))
         actions.keyDown(Keys.CONTROL).sendKeys("0").keyUp(Keys.CONTROL).release().build().perform()
         val selectCG =
             driver.findElement(By.xpath("//div[contains(@class, 'nodeContainer')]/span[text()='CG']/parent::div/span[2]"))
@@ -136,44 +136,38 @@ class IE {
             driver.findElement(By.xpath("//div[@class= 'nodeContainer subgroup']/span[text()='${allSubgroup.last().text}']/parent::div/span[2]"))
         selectSubgroup.click()
         allSubgroup.last().click()
-
-        val allNameType =
-            driver.findElements(By.xpath("/html/body/div[1]/div[2]/div[2]/ul/li[1]/ul/li[2]/ul/li[6]/ul/li[23]/ul/li[7]/ul/li/div/span[3]"))
-
-        val createType = driver.findElement(By.xpath("/html/body/div[1]/div[3]/div[1]/div/div/div/input[1]"))
-        createType.click()
-        val inputValue = driver.findElement(By.xpath("//*[@id=\"ui-id-1\"]/div[1]/table/tbody/tr[1]/td[2]/input"))
-        var nameTypeNom = ""
-        var nameTypeStr = ""
-        allNameType.last().text.forEach {
-            if (it.isDigit()) {
-                nameTypeNom += it
+        val allNameType = driver.findElements(By.xpath("//div[contains(@class, 'nodeContainer type')]/span[3]"))
+        var nameNewType = ""
+        if (allNameType.isEmpty()) {
+            nameNewType = "1"
+        } else {
+            var nameTypeNom = ""
+            var nameTypeStr = ""
+            allNameType.last().text.forEach {
+                if (it.isDigit()) {
+                    nameTypeNom += it
+                }
+                if (it.isLetter()) {
+                    nameTypeStr += it
+                }
             }
-            if (it.isLetter()) {
-                nameTypeStr += it
-            }
+            nameNewType = "${nameTypeStr}${nameTypeNom.toInt().plus(1)}"
         }
-        val nameNewType = "${nameTypeStr}${nameTypeNom.toInt().plus(1)}"
+        val createType = driver.findElement(By.xpath("//div[@class= 'buttonWrapper']/input[@value= 'Create Type']"))
+        createType.click()
+        val inputValue =
+            driver.findElement(By.xpath("//div[@class= 'dialog ui-dialog-content ui-widget-content']/div/table/tbody/tr/td/input[@type= 'text']"))
         inputValue.sendKeys(nameNewType)
-        val buttonOK = driver.findElement(By.xpath("//*[@id=\"ui-id-1\"]/div[2]/button[1]"))
+        val buttonOK = driver.findElement(By.xpath("//div[@class= 'buttons']/button[text()= 'Ok']"))
         buttonOK.click()
-        val targetNewType = driver.findElement(
-            By.xpath(
-                "/html/body/div[1]/div[2]/div[2]/ul/li[1]/ul/li[2]/ul/li[6]/ul/li[23]/ul/li[7]/ul/li[${
-                    allNameType.size.plus(
-                        1
-                    )
-                }]/div/span[3]"
-            )
-        )
+        val targetNewType =
+            driver.findElement(By.xpath("//div[contains(@class, 'nodeContainer type')]/span[text() = '${nameNewType}']"))
         targetNewType.click()
-
         createParameters()
-        driver.findElement(By.xpath("//*[@id=\"Scroller\"]/div/div[2]/div[2]/fieldset/div[1]/fieldset/div[1]/table/tbody/tr[3]/td[3]"))
-        val publishType =
-            driver.findElement(By.xpath("//*[@id=\"Scroller\"]/div/div[2]/div[2]/fieldset/div[1]/div[5]/input[3]"))
+        driver.findElement(By.xpath("//td[text()= '${nameParameter}']"))
+        val publishType = driver.findElement(By.xpath("//div[@class= 'rightButtons']/input[@value = 'Publish']"))
         publishType.click()
-        val approveType = driver.findElement(By.xpath("//*[@id=\"draftPublish\"]"))
+        val approveType = driver.findElement(By.xpath("//div[@class= 'rightButtons']/input[@value = 'Approve']"))
         approveType.click()
         createVersion()
         createRevision()
