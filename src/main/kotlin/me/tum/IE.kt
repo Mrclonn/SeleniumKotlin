@@ -1,14 +1,11 @@
 package me.tum
 
-import org.apache.poi.ss.usermodel.WorkbookFactory
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.openqa.selenium.By
 import org.openqa.selenium.Keys
 import org.openqa.selenium.ie.InternetExplorerDriver
 import org.openqa.selenium.ie.InternetExplorerOptions
 import org.openqa.selenium.interactions.Actions
-import java.io.FileInputStream
-import java.io.FileOutputStream
+import org.openqa.selenium.support.ui.Select
 import java.time.Duration
 
 class IE {
@@ -19,7 +16,7 @@ class IE {
     private val capabilities = InternetExplorerOptions().ignoreZoomSettings()
     private val driver = InternetExplorerDriver(capabilities)
     private val actions = Actions(driver)
-//   private val select = new Select()
+
 
     private fun driverOptions() {
         driver.get(urlClassifierTest1)
@@ -46,12 +43,11 @@ class IE {
             driver.findElement(By.xpath("//div[@class= 'nodeContainer subgroup']/span[text()='${allSubgroup.last().text}']/parent::div/span[2]"))
         selectSubgroup.click()
         allSubgroup.last().click()
-        val allNameType = driver.findElements(By.xpath("//div[@class= 'nodeContainer type']/span[3]"))
+        val allNameType = driver.findElements(By.xpath("//div[contains(@class, 'nodeContainer type')]/span[3]"))
         val createType = driver.findElement(By.xpath("//div[@class= 'buttonWrapper']/input[@value= 'Create Type']"))
         createType.click()
         val inputValue =
             driver.findElement(By.xpath("//div[@class= 'dialog ui-dialog-content ui-widget-content']/div/table/tbody/tr/td/input[@type= 'text']"))
-        // //*[@id="ui-id-1"]/div[1]/table/tbody/tr[1]/td[2]/input
         var nameTypeNom = ""
         var nameTypeStr = ""
         allNameType.last().text.forEach {
@@ -64,24 +60,16 @@ class IE {
         }
         val nameNewType = "${nameTypeStr}${nameTypeNom.toInt().plus(1)}"
         inputValue.sendKeys(nameNewType)
-        val buttonOK = driver.findElement(By.xpath("//*[@id=\"ui-id-1\"]/div[2]/button[1]"))
+        val buttonOK = driver.findElement(By.xpath("//div[@class= 'buttons']/button[text()= 'Ok']"))
         buttonOK.click()
-        val targetNewType = driver.findElement(
-            By.xpath(
-                "/html/body/div[1]/div[2]/div[2]/ul/li[1]/ul/li[29]/ul/li[6]/ul/li[32]/ul/li[7]/ul/li[${
-                    allNameType.size.plus(
-                        1
-                    )
-                }]/div/span[3]"
-            )
-        )
+        val targetNewType =
+            driver.findElement(By.xpath("//div[contains(@class, 'nodeContainer type')]/span[text() = '${nameNewType}']"))
         targetNewType.click()
         createParameters()
-        driver.findElement(By.xpath("//*[@id=\"Scroller\"]/div/div[2]/div[2]/fieldset/div[1]/fieldset/div[1]/table/tbody/tr[3]/td[3]"))
-        val publishType =
-            driver.findElement(By.xpath("//*[@id=\"Scroller\"]/div/div[2]/div[2]/fieldset/div[1]/div[5]/input[3]"))
+        driver.findElement(By.xpath("//td[text()= '${nameParameter}']"))
+        val publishType = driver.findElement(By.xpath("//div[@class= 'rightButtons']/input[@value = 'Publish']"))
         publishType.click()
-        val approveType = driver.findElement(By.xpath("//*[@id=\"draftPublish\"]"))
+        val approveType = driver.findElement(By.xpath("//div[@class= 'rightButtons']/input[@value = 'Approve']"))
         approveType.click()
 
         createVersion()
@@ -244,7 +232,8 @@ class IE {
                         selectOk.click()
                         Thread.sleep(3000)
                         val blockVersion =
-                            driver.findElement(By.xpath("//span[@class= 'ui-icon ui-accordion-header-icon ui-icon-triangle-1-e']"))
+                            driver.findElement(By.xpath("//div[@class= 'VersionGridContainer']/table/tbody/tr/td/span[contains(@class, 'ui-icon')]"))
+                        //span[@class= 'ui-icon ui-accordion-header-icon ui-icon-triangle-1-e']
                         blockVersion.click()
                         exit = "Create"
                     }
@@ -277,12 +266,50 @@ class IE {
         }
     }
 
+    private fun workCreationRevision() {
+        val allNameRevision = driver.findElements(By.xpath("//a[@data-bind='text: manufacturingId']"))
+        if (allNameRevision.size == 1) {
+            val blockRevision =
+                driver.findElement(By.xpath("//legend[text() = 'Revisions']/../table/tbody/tr[contains(@data-bind,'selected')]/td/span[contains(@class, 'ui-icon')]"))
+            blockRevision.click()
+        } else {
+            val blockRevisions =
+                driver.findElements(By.xpath("//legend[text() = 'Revisions']/../table/tbody/tr[contains(@data-bind,'selected')]/td/span[contains(@class, 'ui-icon')]"))
+            blockRevisions.last().click()
+            val scope = driver.findElement(By.xpath("//textarea[contains(@data-bind, 'target: scope')]"))
+            scope.sendKeys("Test scope revision")
+            val reason = driver.findElement(By.xpath("//textarea[contains(@data-bind, 'target: reason')]"))
+            reason.sendKeys("Test reason revision")
+        }
+        val selectBomSource = driver.findElement(By.xpath("//select[contains(@data-bind, 'value: bomSource')]"))
+        val selectExcel = Select(selectBomSource)
+        selectExcel.selectByValue("2")
+        val sendFile = driver.findElement(By.xpath("//input[@type='file']"))
+        sendFile.sendKeys("C:\\Users\\tev\\IdeaProjects\\SeleniumKotlin\\src\\main\\kotlin\\Files\\FileAddBom.xlsx")
+        val uploadFile = driver.findElement(By.xpath("//input[@type='submit']"))
+        uploadFile.click()
+        //НУЖНО НАЙТИ ЭТО КОНТЕКСТНОЕ МЕНЮ!!!
+        val bomOk = driver.findElement(By.xpath("//div[@id= 'ui-id-27']/div[@class= 'buttons']/button[text()= 'Ok']"))
+        bomOk.click()
+        val publishRevision = driver.findElement(By.xpath("//div[@class= 'rightButtons']/input[@value= 'Publish']"))
+        publishRevision.click()
+        val approveRevision = driver.findElement(By.xpath("//div[@class= 'rightButtons']/input[@value= 'Approve']"))
+        approveRevision.click()
+    }
 
     fun createRevision(nameType: String = "") {
-//        selectType(nameType)
-        val nameRevision = driver.findElement(By.xpath(""))
-
-
+        selectType(nameType)
+        val createRevision =
+            driver.findElement(By.xpath("//fieldset[@data-bind='loading: revListLoading']/div[@class='headLine']/table/tbody/tr/td/input"))
+        createRevision.click()
+        val createRevisionOk =
+            driver.findElement(By.xpath("//span[@data-bind='loading: savingRevision']/input[@value= 'Ok']"))
+        createRevisionOk.click()
+        Thread.sleep(5000)
+        val allNameRevision = driver.findElements(By.xpath("//a[@data-bind='text: manufacturingId']"))
+        val nameRevision = allNameRevision.last().text
+        WorkDoc().workExcel(nameRevision)
+        workCreationRevision()
 
     }
 }

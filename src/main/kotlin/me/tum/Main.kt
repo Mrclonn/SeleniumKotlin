@@ -11,7 +11,8 @@ fun main() {
 //   IE().createNewType()
 //    IE().createNewTypeWeb()
 //    Chrome().createNewType()
-//    IE().createVersion()
+//    IE().createVersion("14")
 //   WorkDoc().workExcel()
+    IE().createRevision("12")
 }
 
