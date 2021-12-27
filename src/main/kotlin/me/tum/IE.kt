@@ -82,34 +82,35 @@ class IE {
 
     private fun createParameters() {
         val createParameter =
-            driver.findElement((By.xpath("//*[@id=\"Scroller\"]/div/div[2]/div[2]/fieldset/div[1]/fieldset/div[2]/button")))
+            driver.findElement((By.xpath("//legend[text()= 'Configurator']/../div/button")))
         createParameter.click()
         val valueParameter =
-            driver.findElement(By.xpath("//*[@id=\"Scroller\"]/div/div[2]/div[2]/fieldset/div[1]/fieldset/div[1]/table/tbody/tr[3]/td[1]/fieldset/div[1]/div[1]/div/div[2]/input"))
+            driver.findElement(By.xpath("//div[@class= 'tdinput']/input[@title='Parameter Code']"))
         valueParameter.sendKeys(nameParameter)
-        val addValueFirst = driver.findElement(By.xpath("//*[@id=\"values\"]/div/button"))
+        val descriptionParameter = driver.findElement(By.xpath("//div[@class= 'tdinput']/textarea[@title='Parameter Description']"))
+        descriptionParameter.sendKeys(nameParameter)
+        val addValueFirst = driver.findElement(By.xpath("//div/button[text()= 'Add value']"))
         addValueFirst.click()
-        val nameValueFirst = driver.findElement(By.xpath("//*[@id=\"values\"]/div[1]/div[1]/div[1]/div/div[2]/input"))
+        val nameValueFirst = driver.findElement(By.xpath("//div[@class= 'tdinput']/input[@title= 'Value Code']"))
         nameValueFirst.sendKeys("1")
-        val saveValueFirst = driver.findElement(By.xpath("//*[@id=\"values\"]/div[1]/div[2]/button[1]"))
+        val saveValueFirst = driver.findElement(By.xpath("//div[@class='right-text']/button[text()= 'Save']"))
         saveValueFirst.click()
-        val trueValues = driver.findElements(By.xpath("//*[@id=\"values\"]/div[1]/table/tbody/tr/td[3]/span"))
+        val trueValues = driver.findElements(By.xpath("//td[contains(@data-bind, 'isForParametricAssemblyType')]/span[@class= 'command']"))
         if (trueValues.isNotEmpty()) {
-            var buttonAdd = 1
             while (countValue != 1) {
                 countValue -= 1
-                val addValue = driver.findElement(By.xpath("//*[@id=\"values\"]/div[${buttonAdd.plus(1)}]/button"))
+                val addValue = driver.findElement(By.xpath("//div/button[text()= 'Add value']"))
                 addValue.click()
                 val nameValue =
-                    driver.findElement(By.xpath("//*[@id=\"values\"]/div[${buttonAdd.plus(1)}]/div[1]/div[1]/div/div[2]/input"))
-                nameValue.sendKeys("${trueValues.last().text.toInt().plus(buttonAdd)}")
+                    driver.findElement(By.xpath("//div[@class= 'tdinput']/input[@title= 'Value Code']"))
+                val allNameValues = driver.findElements(By.xpath("//td[contains(@data-bind, 'isForParametricAssemblyType')]/span[@class= 'command']"))
+                nameValue.sendKeys("${allNameValues.last().text.toInt().plus(1)}")
                 val saveValue =
-                    driver.findElement(By.xpath("//*[@id=\"values\"]/div[${buttonAdd.plus(1)}]/div[2]/button[1]"))
+                    driver.findElement(By.xpath("//div[@class='right-text']/button[text()= 'Save']"))
                 saveValue.click()
-                buttonAdd += 1
             }
             val saveParameter =
-                driver.findElement(By.xpath("//*[@id=\"Scroller\"]/div/div[2]/div[2]/fieldset/div[1]/fieldset/div[1]/table/tbody/tr[3]/td[1]/fieldset/legend/span[1]"))
+                driver.findElement(By.xpath("//span[@class= 'imageButton save']"))
             saveParameter.click()
         }
     }
@@ -175,6 +176,7 @@ class IE {
         val approveType = driver.findElement(By.xpath("//*[@id=\"draftPublish\"]"))
         approveType.click()
         createVersion()
+        createRevision()
     }
 
     private fun deleteNewType() {
