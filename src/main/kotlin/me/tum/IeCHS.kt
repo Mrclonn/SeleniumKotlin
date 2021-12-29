@@ -6,6 +6,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver
 import org.openqa.selenium.ie.InternetExplorerOptions
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.support.ui.Select
+import org.testng.annotations.Test
 import java.time.Duration
 
 open class IeCHS {
@@ -49,17 +50,20 @@ open class IeCHS {
         val importanceRU = driver.findElement(By.xpath("//select[contains(@data-bind, 'value: importanceType')]"))
         val selectImportanceRU = Select(importanceRU)
         selectImportanceRU.selectByIndex(1) // "Low"
-        val assumedResponsibilityRU = driver.findElement(By.xpath("//select[contains(@data-bind, 'value: ruOpinionResponsibleParty')]"))
+        val assumedResponsibilityRU =
+            driver.findElement(By.xpath("//select[contains(@data-bind, 'value: ruOpinionResponsibleParty')]"))
         val selectAssumedResponsibilityRU = Select(assumedResponsibilityRU)
         selectAssumedResponsibilityRU.selectByIndex(2)
     }
 
     private fun formRuClaimDecision() {
-        val selectForm = driver.findElement(By.xpath("//div[@class='ui-widget-content slick-row even']/div[contains(@class, 'fa-caret-right selected')]"))
+        val selectForm =
+            driver.findElement(By.xpath("//div[@class='ui-widget-content slick-row even']/div[contains(@class, 'fa-caret-right selected')]"))
         selectForm.click()
         val selectDecision = driver.findElement(By.xpath("//a[@href= '#decision']"))
         selectDecision.click()
-        val importanceMAN = driver.findElement(By.xpath("//select[contains(@data-bind, 'value: decision.importanceType')]"))
+        val importanceMAN =
+            driver.findElement(By.xpath("//select[contains(@data-bind, 'value: decision.importanceType')]"))
         val selectImportanceRU = Select(importanceMAN)
         selectImportanceRU.selectByIndex(3) // "High"
         val comment = driver.findElement(By.xpath("//div[@class= 'shortcut']"))
@@ -71,12 +75,14 @@ open class IeCHS {
         selectOk.click()
     }
 
+    @Test(groups = ["CHS"])
     fun createNewRuClaim() {
         driverOptions()
         val selectRuClaim = driver.findElement(By.xpath("//span[text()= 'RUClaims']"))
         selectRuClaim.click()
         Thread.sleep(8000)
-        val createRuClaim = driver.findElement(By.xpath("//div[@title= 'Создать Рекламацию РО']")) //div/span[text()= 'Создать']"))
+        val createRuClaim =
+            driver.findElement(By.xpath("//div[@title= 'Создать Рекламацию РО']")) //div/span[text()= 'Создать']"))
         createRuClaim.click()
         formRuClaimCommon()
         val publishRuClaim = driver.findElement(By.xpath("//span[text()= 'Publish']"))
@@ -90,6 +96,7 @@ open class IeCHS {
         Thread.sleep(5000)
         val closeFromDecision = driver.findElement(By.xpath("//button[@title='Close']"))
         closeFromDecision.click()
+        driver.quit()
     }
 
     private fun formMANClaimCommon() {
@@ -123,18 +130,24 @@ open class IeCHS {
         val nonconformity = driver.findElement(By.xpath("//textarea[@class= 'w100 h100 tooltip tooltipstered']"))
         nonconformity.sendKeys("TestSelenium")
     }
+
     private fun formMANClaimDecision() {
-        val selectForm = driver.findElement(By.xpath("//div[@class='ui-widget-content slick-row even']/div[contains(@class, 'fa-caret-right selected')]"))
+        val selectForm =
+            driver.findElement(By.xpath("//div[@class='ui-widget-content slick-row even']/div[contains(@class, 'fa-caret-right selected')]"))
         selectForm.click()
         val selectDecision = driver.findElement(By.xpath("//div[@id='manDetails']//a[@href= '#decision']"))
         selectDecision.click()
-        val returnedValuePolicy = driver.findElement(By.xpath("//select[contains(@data-bind, 'value: returnedValuePolicy')]"))
+        val returnedValuePolicy =
+            driver.findElement(By.xpath("//select[contains(@data-bind, 'value: returnedValuePolicy')]"))
         val selectReturnedValuePolicy = Select(returnedValuePolicy)
         selectReturnedValuePolicy.selectByIndex(2)
         val comment = driver.findElement(By.xpath("//div[@class= 'shortcut']"))
         comment.click()
     }
 
+    @Test(
+        groups = ["CHS"], dependsOnMethods = ["createNewRuClaim"]
+    )
     fun createNewMANClaim() {
         driverOptions()
         val selectMANClaim = driver.findElement(By.xpath("//span[text()= 'MANClaims']"))
@@ -154,5 +167,6 @@ open class IeCHS {
         Thread.sleep(5000)
         val closeFromDecision = driver.findElement(By.xpath("//button[@title='Close']"))
         closeFromDecision.click()
+        driver.quit()
     }
 }

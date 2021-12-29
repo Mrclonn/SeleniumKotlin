@@ -6,6 +6,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver
 import org.openqa.selenium.ie.InternetExplorerOptions
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.support.ui.Select
+import org.testng.annotations.Test
 import java.time.Duration
 
 class IeClassifier {
@@ -24,6 +25,7 @@ class IeClassifier {
         actions.keyDown(Keys.CONTROL).sendKeys("0").keyUp(Keys.CONTROL).release().build().perform() // Zoom == 100%
     }
 
+    @Test (groups = ["Classifier"])
     fun createNewType() {
         driverOptions()
         val selectCG =
@@ -78,6 +80,7 @@ class IeClassifier {
         approveType.click()
         createVersion()
         createRevision()
+        driver.quit()
     }
 
     private fun createParameters() {

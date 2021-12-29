@@ -19,8 +19,7 @@ class ChromeCHS {
 
     private fun driverOptions() {
         driver.manage().window().maximize()
-        driver.get(urlCHSTest2)
-        //driver.manage().window().maximize()
+        driver.get(urlCHSTest2Chrome)
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30))
         actions.keyDown(Keys.CONTROL).sendKeys("0").keyUp(Keys.CONTROL).release().build().perform() // Zoom == 100%
     }
